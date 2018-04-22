@@ -27,7 +27,7 @@ namespace ExchangeRateAPI.Controllers
             com.CommandType = CommandType.StoredProcedure;
             com.Parameters.AddWithValue("@CN_NAME_ENG", Obj.CN_NAME_ENG);
             com.Parameters.AddWithValue("@CN_NAME_ARB", Obj.CN_NAME_ENG);
-            com.Parameters.AddWithValue("@CN_FLAG_PATH", Obj.CN_FLAG_PATH);
+            com.Parameters.AddWithValue("@CN_FLAG_PATH", Obj.CN_FLAG_PATH == null ? "test": Obj.CN_FLAG_PATH);
             com.Parameters.AddWithValue("@CN_CURR_ID", Obj.CN_CURR_ID);
             com.Parameters.AddWithValue("@CN_CURRENCY_ENG", Obj.CN_CURRENCY_ENG);
             com.Parameters.AddWithValue("@CN_CURRENCY_ARB", Obj.CN_CURRENCY_ENG);
@@ -63,7 +63,7 @@ namespace ExchangeRateAPI.Controllers
             myConnection.Open();
             reader = sqlCmd.ExecuteReader();
             var data = new List<CountryMaster>();
-           
+            
             while (reader.Read())
             {
                 CountryMaster userObj = new CountryMaster();
