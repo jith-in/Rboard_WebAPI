@@ -153,6 +153,7 @@
     <Compile Include="Models\BranchMaster.cs" />
     <Compile Include="Models\CompanyMaster.cs" />
     <Compile Include="Models\CountryMaster.cs" />
+    <Compile Include="Models\CurrencyMaster.cs" />
     <Compile Include="Models\UserMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

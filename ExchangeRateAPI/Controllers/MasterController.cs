@@ -79,5 +79,63 @@ namespace ExchangeRateAPI.Controllers
 
         }
 
+        [HttpPost]
+        [ActionName("Currency")]
+        public JsonResult AddCurrency(CurrencyMaster Obj)
+        {
+            SqlConnection myConnection = new SqlConnection();
+            myConnection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ExchangeApiConnection"].ConnectionString;
+
+            SqlCommand com = new SqlCommand("SP_ADD_CURRENCY_MASTER", myConnection);
+            com.CommandType = CommandType.StoredProcedure;
+            com.Parameters.AddWithValue("@CR_NAME_ENG", Obj.CR_NAME_ENG);
+            com.Parameters.AddWithValue("@CR_NAME_ARB", Obj.CR_NAME_ENG);
+            com.Parameters.AddWithValue("@CR_FLAG_PATH", Obj.CR_FLAG_PATH == null ? "test" : Obj.CR_FLAG_PATH);
+            com.Parameters.AddWithValue("@CR_CREATED_BY", Obj.CR_CREATED_BY);
+            com.Parameters.AddWithValue("@CR_UPDATED_BY", Obj.CR_UPDATED_BY);
+            SqlParameter outputParam = com.Parameters.Add("@Status", SqlDbType.Int, 1);
+            outputParam.Direction = ParameterDirection.Output;
+            myConnection.Open();
+            com.ExecuteNonQuery();
+            int id = Convert.ToInt32(outputParam.Value);
+            bool status = id == 0 ? false : true;
+            if (!status)
+                return null;
+            myConnection.Close();
+            return Json(status);
+
+        }
+
+
+        [HttpGet]
+        [ActionName("Currency")]
+        public JsonResult GetAllCurrency()
+        {
+            //return listuserObj.First(e => e.ID == id);  
+            SqlDataReader reader = null;
+            SqlConnection myConnection = new SqlConnection();
+            myConnection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ExchangeApiConnection"].ConnectionString;
+
+            SqlCommand sqlCmd = new SqlCommand();
+            sqlCmd.CommandType = CommandType.Text;
+            sqlCmd.CommandText = "Select CR_NAME_ENG,CR_ID from CURRENCY_MASTER";
+            sqlCmd.Connection = myConnection;
+            myConnection.Open();
+            reader = sqlCmd.ExecuteReader();
+            var data = new List<CurrencyMaster>();
+
+            while (reader.Read())
+            {
+                CurrencyMaster userObj = new CurrencyMaster();
+                userObj.CR_NAME_ENG = reader.GetValue(0).ToString();
+                userObj.CR_ID = Convert.ToInt32(reader.GetValue(1)); 
+                data.Add(userObj);
+
+            }
+            myConnection.Close();
+            return Json(data.ToList(), JsonRequestBehavior.AllowGet);
+
+        }
+
     }
 }
